@@ -1,0 +1,65 @@
+
+######################  参数1  ####################
+para.p              = 196;      % 降维的维数
+para.K              = 100;
+
+para.lambda1        = 0.15;     % lambda1 ||S||_1
+para.lambda2        = 1.5;
+para.MaxIters       = 25;
+
+para.draw           = true;
+
+SC_param.mode       = 2;
+SC_param.lambda     = 0;
+SC_param.lambda2    = para.lambda1;
+
+SRDR
+reco_rates =
+
+   95.274%
+   89.986%
+   91.2400
+   90.5830
+
+PCA+SR+SVM
+reco_rates =
+
+   89.634%
+   74.392%
+   92.5100
+   91.5300
+
+
+
+%% 设置实验参数
+rdim            = 300;  % 降维维度 PCA，SRDR
+isdr            = true; % 是否降维
+issr            = true; % 是否用字典学习
+
+%% SVM学习率
+lambda          = 0.03;
+
+%% SR参数
+para.p              = rdim;      % 降维的维数
+para.K              = 100;
+
+para.lambda1        = 0.15;     % lambda1 ||S||_1，lambda2 ||S||_2
+para.lambda2        = 1.5;
+para.MaxIters       = 25;
+
+reco_rates =
+
+   95.6300          % f = 10
+   90.9870          % f = 5
+
+para.lambda1        = 0.03;
+reco_rates =
+
+   95.9860
+   88.9840
+
+PCA_MMDL
+reco_rates =
+
+   95.8841          % f = 10
+   91.7024          % f = 5
