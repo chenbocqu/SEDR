@@ -391,24 +391,12 @@ handles.d = round(str2double(get(handles.DimEdit,'String')));
 handles.d = max(1,handles.d);
 updateString{1} = 'Running Hessian LLE.';
 set(handles.UpdatesText,'String',updateString);
-
-choose = 1;
-
-
-% handles.ColorVector = evalin ('base',get(handles.ColorEdit,'String'));
 tic;
-if choose == 1
-    %% OOPDR
-    Y = SEDR_Process( handles.X',handles.d,20,handles.ColorVector);
-    handles.Y = Y';
-else
-    [Y, mse] = HLLE(handles.X',handles.K,handles.d);
-    handles.Y = Y';
-end
-
+[Y, mse] = HLLE(handles.X',handles.K,handles.d);
+handles.Y = Y';
 runTime = toc;
 guidata(hObject, handles);
-% PlotEmbedding(hObject,eventdata,handles,0);
+PlotEmbedding(hObject,eventdata,handles,0);
 assignin ('base','maniY',handles.Y);
 updateString{2} = ['Hessian LLE complete: ',num2str(runTime),'s'];
 updateString{3} = 'Embedding data written to matrix "maniY"';
