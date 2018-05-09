@@ -394,23 +394,29 @@ set(handles.UpdatesText,'String',updateString);
 
 choose = 1;
 
-
 % handles.ColorVector = evalin ('base',get(handles.ColorEdit,'String'));
 tic;
-if choose == 1
-    %% OOPDR
-    Y = SEDR_Process( handles.X',handles.d,20,handles.ColorVector);
-    handles.Y = Y';
-else
-    [Y, mse] = HLLE(handles.X',handles.K,handles.d);
-    handles.Y = Y';
+
+%% OOPDR
+[yy,Ps] = SEDR_Process( handles.X',handles.d,10,handles.ColorVector);
+X       = handles.X';
+
+[m,n]   = size(Ps);
+
+k       = ceil( sqrt(n) );
+for i = 1:n
+    
+    Y           = Ps{i}*X;
+    handles.Y   = Y';
+    
+    guidata(hObject, handles);
+    myPlotEmbed(hObject,eventdata,handles,i,k);
+    
 end
 
 runTime = toc;
-guidata(hObject, handles);
-% PlotEmbedding(hObject,eventdata,handles,0);
 assignin ('base','maniY',handles.Y);
-updateString{2} = ['Hessian LLE complete: ',num2str(runTime),'s'];
+updateString{2} = ['SEDR complete: ',num2str(runTime),'s'];
 updateString{3} = 'Embedding data written to matrix "maniY"';
 set(handles.UpdatesText,'String',updateString);
 
@@ -753,8 +759,11 @@ else
 end;
 
 
-% --- Plot the output embedding. // 画输出
 function PlotEmbedding (hObject, eventdata, handles, plotNumber)
+myPlotEmbed (hObject, eventdata, handles, plotNumber,3)
+
+% --- Plot the output embedding. // 画输出
+function myPlotEmbed (hObject, eventdata, handles, plotNumber,k)
 
 plotSize = 4;
 
@@ -772,8 +781,8 @@ guidata(hObject, handles);
 if plotNumber == 0
     axes(handles.embedAXES);
 else
-    figure(2);
-    subplot(3,3,plotNumber);
+    figure(4);
+    subplot(k,k,plotNumber);
 end;
 % figure;
 grid on;
@@ -814,7 +823,10 @@ if handles.runTime >= 60
     timeunits = 'h';
 end;
 
-xlabel(['第 ',num2str(plotNumber),' 次运行']);
+xlabel(['# ',num2str(plotNumber)]);
+
+% xlabel(['第 ',num2str(plotNumber),' 次运行']);
+
 
 % switch plotNumber
 %     case 1
@@ -1790,7 +1802,7 @@ h35 = uicontrol(...
 'FontSize',12,...
 'ListboxTop',0,...
 'Position',[65 4.46153846153846 20.2 2.15384615384615],...
-'String','LLE',...
+'String','SEDR',...
 'Tag','LLEButton');
 
 

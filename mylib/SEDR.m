@@ -1,4 +1,4 @@
-function [ P,B,S,J ]=SEDR(X,para)
+function [ P,B,S,J,Ps ]=SEDR(X,para)
 
 %% 直接返回低维字典 & 投影矩阵
 
@@ -53,7 +53,7 @@ while  iteration <= Max_iteration
     %% Fix P
     P_X         = P * X;
     
-    PlotEmbedding(P_X,color_vec,iteration);
+%     PlotEmbedding(P_X',color_vec,iteration);
     
     % compute S
     S           = mexLasso( P_X,B,SC_param );
@@ -67,6 +67,8 @@ while  iteration <= Max_iteration
     %% print lost J
     j           = norm(P*X-B*S,2)^2 + lambda1*norm(S,1) + lambda2*norm(X-P'*P*X,2)^2;
     J           = [J,j];
+    
+    Ps{iteration}= P;
     
     fprintf(['sr_dr: J = ' num2str(j) '; iter = ' num2str(iteration) '.\n']);
     
@@ -88,44 +90,6 @@ if draw
     grid on;
     
 end
-
-    function PlotEmbedding (Y,color_vec,plotNumber)
-        
-        plotSize = 4;
-        
-        [m,n] = size(Y);
-        
-        Clength = length(color_vec);
-        if Clength < m
-            color_vec(Clength+1:m) = color_vec(Clength);
-        elseif Clength > m
-            color_vec = color_vec(1:m);
-        end;
-        
-        figure(3);
-        subplot(3,3,plotNumber);
-        
-        % figure;
-        grid on;
-        if n == 2
-            scatter(Y(:,1),Y(:,2),plotSize,color_vec,'filled');
-            axis tight;
-        elseif n == 3
-            
-            scatter3(Y(:,1),Y(:,2),Y(:,3),plotSize,color_vec,'filled');
-            axis tight;
-        elseif n == 1
-            
-            scatter(Y(:,1),ones(m,1),plotSize,color_vec,'filled');
-            axis tight;
-        else
-            cla;
-            axis([-1 1 -1 1]);
-            axis off;
-        end;
-        xlabel(['第 ',num2str(plotNumber),' 次迭代']);
-        
-    end
 
 end
 
